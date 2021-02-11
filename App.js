@@ -26,7 +26,7 @@ import {
   DebugInstructions,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
-import Database from './Database';
+import Database from './src/config/Database';
 const db = new Database();
 
 const App: () => React$Node = () => {

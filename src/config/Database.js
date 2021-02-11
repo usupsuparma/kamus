@@ -2,7 +2,7 @@ import SQLite from 'react-native-sqlite-storage';
 SQLite.DEBUG(true);
 SQLite.enablePromise(true);
 
-const database_name = 'Reactoffline.db';
+const database_name = 'MyKamus.db';
 const database_version = '1.0';
 const database_displayname = 'SQLite React Offline Database';
 const database_size = 200000;
@@ -25,43 +25,7 @@ export default class Database {
             .then((DB) => {
               db = DB;
               console.log('Database OPEN');
-              db.executeSql('SELECT 1 FROM Product LIMIT 1')
-                .then(() => {
-                  console.log('Database is ready ... executing query ...');
-                })
-                .catch((error) => {
-                  console.log('Received error: ', error);
-                  console.log('Database not yet ready ... populating data');
-                  db.transaction((tx) => {
-                    tx.executeSql(
-                      'CREATE TABLE IF NOT EXISTS Product (prodId, prodName, prodDesc, prodImage, prodPrice)',
-                    );
-                  })
-                    .then(() => {
-                      console.log('Table created successfully');
-                    })
-                    .catch((error) => {
-                      console.log(error);
-                    });
-                });
-              db.executeSql('SELECT 1 FROM data_en_id LIMIT 1')
-                .then(() => {
-                  console.log('data en id is ready');
-                })
-                .catch((err) => {
-                  db.transaction((tx) => {
-                    tx.executeSql(
-                      'CREATE TABLE IF NOT EXISTS data_en_id (id, word, trans, bookmarked)',
-                    );
-                  })
-
-                    .then(() => {
-                      console.log('Table data_en_id created successfully');
-                    })
-                    .catch((error) => {
-                      console.log(error);
-                    });
-                });
+              this.initData(db);
               resolve(db);
             })
             .catch((error) => {
@@ -87,6 +51,23 @@ export default class Database {
         })
           .then(() => {
             console.log('Table data_en_id created successfully');
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      });
+    db.executeSql('SELECT 1 FROM data_id_en LIMIT 1')
+      .then(() => {
+        console.log('data id en is ready');
+      })
+      .catch((err) => {
+        db.transaction((tx) => {
+          tx.executeSql(
+            'CREATE TABLE IF NOT EXISTS data_id_en (id, word, trans, bookmarked)',
+          );
+        })
+          .then(() => {
+            console.log('Table data_id_en created successfully');
           })
           .catch((error) => {
             console.log(error);
